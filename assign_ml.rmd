@@ -1,0 +1,72 @@
+---
+title: "MACHINE LEARNING- ASSIGNMENT"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(caret)
+library(ggplot2)
+library(rpart)
+library(randomForest)
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Executive Summary
+
+With some wearable devices is possible to collect a huge amount of information about the activity based on the the self movement.
+Our task is predict the class of activity based on the information collected using some technics of machine learning.
+
+#  Database
+
+We have two files: 'trainning' and 'test' downloaded from the url https://d396qusza40orc.cloudfront.net. We perform our analysis from file 'trainning' and after that we will apply our best method on file test.    
+
+```{r echo=FALSE}
+
+#download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv", destfile="trainning.csv")
+#download.file("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv", destfile="test.csv")
+
+trainning<- read.csv("trainning.csv", sep=",", header=TRUE,na.strings=c("NA","#DIV/0!",""))
+test<- read.csv("test.csv", sep=",", header=TRUE, na.strings=c("NA","#DIV/0!",""))
+
+trainning$classe<- as.character(trainning$classe)
+```
+
+## Cleaning Data 
+
+After having a glance of the information we discovered that some variables don't have reliable information sucha as NA, #DIV/0, etc. So we need to remove from our analysis reducing the number of variables.
+
+
+```{r echo=FALSE}
+rec<- grep("X|user_name|num_window|avg|std|amplitude|var|kurtosis|skewness|min_roll|min_pitch|min_yaw|max_roll|max_picth|max_yaw", names(trainning))
+trainning<-trainning[,-rec]
+test<-test[,-rec]
+dim(trainning)
+```
+
+## Partition
+
+Using the technics 
+
+```{r}
+train<-createDataPartition(y=trainning$classe, p=.6, list=FALSE)
+dtrainning<- trainning[train,]
+dtesting<- trainning[-train,]
+```
+
+
+
+## Model 2 - Random Forest
+
+First model is a linear model of the both variables mpg as outcome and am as regressor. find a boxplot in appendix I.
+
+```{r}
+
+dtrainning$classe<- as.factor(dtrainning$classe)
+dtesting$classe<- as.factor(dtesting$classe)
+modfit <- rpart(classe~. , data=dtrainning, method="class")
+modfit
+#fancyRpartPlot(modfit)
+prediction<- predict(modfit, newdata=dtesting, type="class")
+confusionMatrix(prediction, dtesting$classe)
+
+
+```
