@@ -31,7 +31,7 @@ dime<-dim(trainning)
 ## Cleaning Data 
 
 We have two files: 'trainning' and 'test' downloaded from the url https://d396qusza40orc.cloudfront.net. We perform our analysis from file 'trainning' and after that we will apply our best method on file test.
-Initialy we have ```{r} print dime[1] ```  records and ```{r} print dime[2] ```
+
 
 After having a glance of the information we discovered that some variables don't have reliable information sucha as NA, #DIV/0, etc. So we need to remove from our analysis reducing the number of variables.
 
@@ -71,7 +71,7 @@ confusionMatrix(prediction, dtesting$classe)
 
 ## Model 2 - Random Forest
 
-Our second model is Random Forest, following the same process, with this model we improve our accuracy.
+Our second model is Random Forest, following the same process.
 
 ```{r}
 set.seed(123456)
@@ -85,11 +85,8 @@ confusionMatrix(prediction2, dtesting$classe)
 
 ## Conclusions
 
+With Random Forest method we can achieve better levels of accuracy. We will use in our predictions.
 
-```{r}
-predict_test <- predict(modfit2, newdata=test, type="class")
-predict_test
-```
 
 
 
